@@ -82,7 +82,7 @@ def _format(text):
                   r'\\textbf{\2}',
                   text)
     text = re.sub(r'\*(?!\s)((\\.|[^\\\*])*?[^\s\\*])\*',
-                  r'\emph{\1}',
+                  r'\\emph{\1}',
                   text)
   # Finally, un-escape any escaped *'s:
   text = re.sub(r'\\(\*|_)', r'\1', text)

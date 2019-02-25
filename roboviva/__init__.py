@@ -15,15 +15,11 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from flask import Flask
-from flask.ext import shelve
+import flask_shelve as shelve
 from .views import blueprint
 
 import sys
 import logging
-
-# Get ourselves into utf8 mode, so we don't have ascii / unicode headaches:
-reload(sys)
-sys.setdefaultencoding("utf8")
 
 app = Flask(__name__, static_url_path='')
 app.config.from_object('config')

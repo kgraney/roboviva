@@ -54,7 +54,7 @@ def getEtagForCSV(route_id):
   for n_tries in range(Max_Attempts):
     try:
       headers = urllib.request.urlopen(url, timeout = 5).info()
-      etag = headers.getheader("ETag")
+      etag = headers["ETag"]
       break
     except urllib.error.HTTPError as e:
       # Probably a 404, so don't bother retrying
@@ -96,7 +96,7 @@ def getETagAndCuesheet_viaJSON(route_id, etag=None, api_key=None):
   for n_tries in range(Max_Attempts):
     try:
       resp = urllib.request.urlopen(req, timeout = 5)
-      new_etag = resp.info().getheader("ETag")
+      new_etag = resp.info()["ETag"]
       raw_json = resp.read()
       break
     except urllib.error.HTTPError as e:
@@ -205,7 +205,7 @@ def getETagAndCuesheet_viaCSV(route_id, etag=None):
   for n_tries in range(Max_Attempts):
     try:
       resp = urllib.request.urlopen(req, timeout = 5)
-      new_etag = resp.info().getheader("ETag")
+      new_etag = resp.info()["ETag"]
       raw_csv = resp.read()
       break
     except urllib.error.HTTPError as e:

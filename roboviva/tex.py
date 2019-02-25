@@ -92,14 +92,14 @@ import tempfile
 
 def _file_read(filename):
     '''Read the content of a file and close it properly.'''
-    f = file(filename, 'rb')
+    f = open(filename, 'rb')
     content = f.read()
     f.close()
     return content
 
 def _file_write(filename, content):
     '''Write into a file and close it properly.'''
-    f = file(filename, 'wb')
+    f = open(filename, 'wb')
     f.write(content)
     f.close()
 
@@ -135,8 +135,8 @@ def convert(tex_source, input_format, output_format, max_runs=5):
                     '-no-shell-escape',
                     tex_filename,
                 ],
-                stdin=file(os.devnull, 'r'),
-                stdout=file(os.devnull, 'w'),
+                stdin=open(os.devnull, 'r'),
+                stdout=open(os.devnull, 'w'),
                 stderr=subprocess.STDOUT,
                 close_fds=True,
                 shell=False,
