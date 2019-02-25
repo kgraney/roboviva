@@ -15,13 +15,13 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import csv
-import cue
-import cue_utils
+from . import cue
+from . import cue_utils
 import hashlib
 import json
 import re
 import socket
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 
 class RideWithGpsError(Exception):
   '''Thrown by getCueSheet() in the event of an error'''
@@ -51,18 +51,18 @@ def getEtagForCSV(route_id):
   '''
   url = "http://ridewithgps.com/routes/%s.csv" % route_id
   Max_Attempts = 3
-  for n_tries in xrange(Max_Attempts):
+  for n_tries in range(Max_Attempts):
     try:
-      headers = urllib2.urlopen(url, timeout = 5).info()
+      headers = urllib.request.urlopen(url, timeout = 5).info()
       etag = headers.getheader("ETag")
       break
-    except urllib2.HTTPError as e:
+    except urllib.error.HTTPError as e:
       # Probably a 404, so don't bother retrying
       raise RideWithGpsError("Unknown Route ID: %s" % route_id)
     except socket.timeout as e:
       # Timeout, let this pass:
       pass
-  print "etag: %s" % etag
+  print("etag: %s" % etag)
   return etag
 
 def getETagAndCuesheet_viaJSON(route_id, etag=None, api_key=None):
@@ -87,19 +87,19 @@ def getETagAndCuesheet_viaJSON(route_id, etag=None, api_key=None):
       Throws a RideWithGpsError in the event of a problem (invalid route id, etc.)
   '''
   url = "http://ridewithgps.com/routes/%s.json?api_key=%s&version=2" % (route_id, api_key)
-  req = urllib2.Request(url)
+  req = urllib.request.Request(url)
   if etag:
     req.add_header("If-None-Match", etag)
 
   raw_json = None
   Max_Attempts = 3
-  for n_tries in xrange(Max_Attempts):
+  for n_tries in range(Max_Attempts):
     try:
-      resp = urllib2.urlopen(req, timeout = 5)
+      resp = urllib.request.urlopen(req, timeout = 5)
       new_etag = resp.info().getheader("ETag")
       raw_json = resp.read()
       break
-    except urllib2.HTTPError as e:
+    except urllib.error.HTTPError as e:
       # This might be a 304: Not Modified, which means the etag we passed was still current:
       if e.code == 304:
         # Return the original ETag, and 'None" for the cue entries, as specified:
@@ -196,19 +196,19 @@ def getETagAndCuesheet_viaCSV(route_id, etag=None):
       Throws a RideWithGpsError in the event of a problem (invalid route id, etc.)
   '''
   url = "http://ridewithgps.com/routes/%s.csv" % route_id
-  req = urllib2.Request(url)
+  req = urllib.request.Request(url)
   if etag:
     req.add_header("If-None-Match", etag)
 
   raw_csv      = None
   Max_Attempts = 3
-  for n_tries in xrange(Max_Attempts):
+  for n_tries in range(Max_Attempts):
     try:
-      resp = urllib2.urlopen(req, timeout = 5)
+      resp = urllib.request.urlopen(req, timeout = 5)
       new_etag = resp.info().getheader("ETag")
       raw_csv = resp.read()
       break
-    except urllib2.HTTPError as e:
+    except urllib.error.HTTPError as e:
       # This might be a 304: Not Modified, which means the etag we passed was still current:
       if e.code == 304:
         # Return the original ETag, and 'None" for the cue entries, as specified:

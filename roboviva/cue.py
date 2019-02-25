@@ -15,7 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import csv
-import enum
+from . import enum
 
 '''The action a particular cue entry represents'''
 Instruction = enum.Enum(LEFT        = "L",

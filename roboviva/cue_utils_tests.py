@@ -15,15 +15,15 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import unittest
-import cue
-import cue_utils
+from . import cue
+from . import cue_utils
 
 def CheckDistances(route):
   for index, entry in enumerate(route.entries[0:-1]):
     next_entry = route.entries[index + 1]
     if (next_entry.absolute_distance != entry.absolute_distance + entry.for_distance):
-      print "Error: %s -> %s (%s, %s)" % (entry, next_entry, index, index + 1)
-      print route
+      print("Error: %s -> %s (%s, %s)" % (entry, next_entry, index, index + 1))
+      print(route)
       return False
   return True
 

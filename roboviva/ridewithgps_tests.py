@@ -15,9 +15,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import unittest
-import ridewithgps
-import cue
-import tex
+from . import ridewithgps
+from . import cue
+from . import tex
 
 class RWGPSTestCase(unittest.TestCase):
   '''Tests for Roboviva's RWGPS-facing functions'''
@@ -174,10 +174,10 @@ class RWGPSTestCase(unittest.TestCase):
     etag, route = ridewithgps.getETagAndCuesheet_viaJSON(Route_Id)
 
     if etag != Expected_ETag:
-      print "Queried RWGPS (route id %s):" % Route_Id
-      print "\tGot etag: %s" % etag
-      print "\tExp etag: %s" % Expected_ETag
-      print "Skipping end-to-end test."
+      print("Queried RWGPS (route id %s):" % Route_Id)
+      print("\tGot etag: %s" % etag)
+      print("\tExp etag: %s" % Expected_ETag)
+      print("Skipping end-to-end test.")
       self.skipTest("MD5 mismatch: expected %s, got %s (route id: %s)" % (Expected_ETag, etag, Route_Id))
 
     self.assertEqual(Route_Id, route.id)
@@ -221,10 +221,10 @@ class RWGPSTestCase(unittest.TestCase):
     etag, route = ridewithgps.getETagAndCuesheet_viaCSV(Route_Id)
 
     if etag != Expected_ETag:
-      print "Queried RWGPS (route id %s):" % Route_Id
-      print "\tGot etag: %s" % etag
-      print "\tExp etag: %s" % Expected_ETag
-      print "Skipping end-to-end test."
+      print("Queried RWGPS (route id %s):" % Route_Id)
+      print("\tGot etag: %s" % etag)
+      print("\tExp etag: %s" % Expected_ETag)
+      print("Skipping end-to-end test.")
       self.skipTest("MD5 mismatch: expected %s, got %s (route id: %s)" % (Expected_ETag, etag, Route_Id))
 
     self.assertEqual(Route_Id, route.id)

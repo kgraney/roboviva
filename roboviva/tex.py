@@ -106,7 +106,7 @@ def _file_write(filename, content):
 def convert(tex_source, input_format, output_format, max_runs=5):
     '''Convert LaTeX or TeX source to PDF or DVI.'''
     # check arguments
-    assert isinstance(tex_source, unicode)
+    assert isinstance(tex_source, str)
     try:
         (tex_cmd, output_suffix) = {
             ('tex',   'dvi'): ('tex',      '.dvi'),
@@ -127,7 +127,7 @@ def convert(tex_source, input_format, output_format, max_runs=5):
         _file_write(tex_filename, tex_source.encode('UTF-8'))
         # run LaTeX processor as often as necessary
         aux_old = None
-        for i in xrange(max_runs):
+        for i in range(max_runs):
             tex_process = subprocess.Popen(
                 [tex_cmd,
                     '-interaction=batchmode',
@@ -183,23 +183,23 @@ def latex2pdf(tex_source, **kwargs):
     return convert(tex_source, 'latex', 'pdf', **kwargs)
 
 _latex_special_chars = {
-    u'$':  u'\\$',
-    u'%':  u'\\%',
-    u'&':  u'\\&',
-    u'#':  u'\\#',
-    u'_':  u'\\_',
-    u'{':  u'\\{',
-    u'}':  u'\\}',
-    u'[':  u'{[}',
-    u']':  u'{]}',
-    u'"':  u"{''}",
-    u'\\': u'\\textbackslash{}',
-    u'~':  u'\\textasciitilde{}',
-    u'<':  u'\\textless{}',
-    u'>':  u'\\textgreater{}',
-    u'^':  u'\\textasciicircum{}',
-    u'`':  u'{}`',   # avoid ?` and !`
-    u'\n': u'\\\\',
+    '$':  '\\$',
+    '%':  '\\%',
+    '&':  '\\&',
+    '#':  '\\#',
+    '_':  '\\_',
+    '{':  '\\{',
+    '}':  '\\}',
+    '[':  '{[}',
+    ']':  '{]}',
+    '"':  "{''}",
+    '\\': '\\textbackslash{}',
+    '~':  '\\textasciitilde{}',
+    '<':  '\\textless{}',
+    '>':  '\\textgreater{}',
+    '^':  '\\textasciicircum{}',
+    '`':  '{}`',   # avoid ?` and !`
+    '\n': '\\\\',
 }
 
 def escape_latex(s):
@@ -223,7 +223,7 @@ def escape_latex(s):
     >>> print escape_latex(s)
     \textbackslash{}{''}\{\}\_\&\%a\$b\#\\c{[}{]}{''}\textasciitilde{}\textless{}\textgreater{}\textasciicircum{}{}`\textbackslash{}
     '''
-    return u''.join(_latex_special_chars.get(c, c) for c in s)
+    return ''.join(_latex_special_chars.get(c, c) for c in s)
 
 def _test():
     '''Run all doc tests of this module.'''

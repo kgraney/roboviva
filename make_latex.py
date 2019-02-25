@@ -21,15 +21,15 @@ from roboviva import tex
 
 def main(argv):
   if len(argv) != 2:
-    print "Usage: %s route_id" % argv[0]
+    print("Usage: %s route_id" % argv[0])
     return 1
 
   route_id = int(argv[1])
-  print "%% Downloading route from ridewithgps...",
+  print("%% Downloading route from ridewithgps...", end=' ')
   etag, cues = ridewithgps.getETagAndCuesheet_viaJSON(route_id)
-  print "%% Done [etag: %s]" % etag
+  print("%% Done [etag: %s]" % etag)
   src = latex.makeLatex(cues)
-  print src
+  print(src)
 
 if __name__ == "__main__":
   sys.exit(main(sys.argv))
