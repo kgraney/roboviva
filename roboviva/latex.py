@@ -123,17 +123,17 @@ def _entryToLatex(entry):
     else:
       note_str = r' \newline \textit{%s}' % esc_note
   if entry.for_distance:
-    for_str = "%5.1f" % entry.for_distance
+    for_str = "%7.02f" % (entry.for_distance * 1.60934)
 
   instruction_str = _instructionToLatex(entry.instruction, entry.modifier)
   note_str        = _format(note_str)
   description_str = _format(esc_description)
-  return r"%s %s & %5.1f & %s%s & %s \\ \hline" % (color_str,
+  return r"%s \textsf{%s} & \texttt{%s} & %s%s & \texttt{%5.1f} \\ \hline" % (color_str,
                                                    instruction_str,
-                                                   entry.absolute_distance,
+                                                   for_str,
                                                    description_str,
                                                    note_str,
-                                                   for_str)
+                                                   entry.absolute_distance * 1.60934)
 
 def makeLatex(route):
   ''' Makes a full latex document from a cue.Route object
@@ -160,11 +160,11 @@ def _makeHeader(route):
 
   route_id = route.id
   route_name = route.name
-  elevation_gain_ft = route.elevation_gain_ft
-  total_distance_mi = route.length_mi
+  elevation_gain_ft = route.elevation_gain_ft * 0.3048
+  total_distance_mi = route.length_mi * 1.60934
 
   header = str(r'''
-\documentclass[11pt]{article}
+\documentclass[10pt]{article}
 \usepackage[left=0.20in,right=0.20in,top=0.7in,bottom=0.25in]{geometry}
 \geometry{letterpaper}
 \usepackage{colortbl}
@@ -174,28 +174,34 @@ def _makeHeader(route):
 \usepackage{fourier}
 \usepackage{bbding}
 \usepackage[alpine]{ifsym}
+\usepackage{inconsolata}
 \usepackage{fancyhdr}
 \usepackage{lastpage}
+\usepackage{booktabs}
+
+\newcolumntype{L}[1]{ >{\raggedright\let\newline\\\arraybackslash} p{#1}}
+\newcolumntype{C}[1]{ >{\centering\let\newline\\\arraybackslash} p{#1}}
+\newcolumntype{R}[1]{ >{\raggedleft\let\newline\\\arraybackslash} p{#1}}
 
 \pagestyle{fancy}
 \fancyhf{}''')
 
   # Fill in left, right headers.
   lhead = None
-  rhead = r"\emph{Route \#%d}" % route_id
+  rhead = r"\textsl{Route \#%d}~\textsc{[Metric]}" % route_id
 
   # We stick the total distance + climb after the route title if it exists,
   # otherwise we put it after the route #:
   if elevation_gain_ft:
-    route_stats_esc = _escape("%.1f mi / %d ft" % (total_distance_mi, elevation_gain_ft))
+    route_stats_esc = _escape("%.1f km / %d m" % (total_distance_mi, elevation_gain_ft))
   else:
     route_stats_esc= _escape("%.1f mi" % (total_distance_mi))
 
   if route_name:
-    lhead = r"\emph{%s (%s)}" % (_escape(route_name), route_stats_esc)
+    lhead = r"\textsl{%s (%s)}" % (_escape(route_name), route_stats_esc)
   else:
     # Stick stats after the right header:
-    rhead += r" \emph{(%s)}" % route_stats_esc
+    rhead += r" \textsl{(%s)}" % route_stats_esc
 
   if lhead:
     header += str(r'''
@@ -206,11 +212,9 @@ def _makeHeader(route):
 \rhead{\small %s}''' % rhead)
 
   header += str(r'''
-\fancyfoot[C]{\footnotesize{\emph{Page~\thepage~of~\pageref{LastPage}}}}
+\fancyfoot[C]{\footnotesize{\textsl{Page~\thepage~of~\pageref{LastPage}}}}
 \setlength{\footskip}{0.0in}
 \setlength{\headsep}{0.2in}
-
-\renewcommand{\familydefault}{\sfdefault}
 
 \begin{document}
 \renewcommand{\arraystretch}{1.15}
@@ -218,17 +222,17 @@ def _makeHeader(route):
 \tablehead{
   \hline
   \rowcolor[gray]{0}
-  \textbf{\textcolor{white}{Go}} &
-  \textbf{\textcolor{white}{At}} &
-  \textbf{\textcolor{white}{On}} &
-  \textbf{\textcolor{white}{For}} \\
+  \raggedright\textsf{\textbf{\textcolor{white}{Go}}} &
+  \raggedright\textsf{\textbf{\textcolor{white}{For}}} &
+  \raggedright\textsf{\textbf{\textcolor{white}{On}}} &
+  \raggedright\textsf{\textbf{\textcolor{white}{At}}} \tabularnewline
   \hline
 }
-\tabletail{\hline}
-\tablelasttail{\hline}
+\tabletail{\hline
+    \multicolumn{4}{l}{\textsl{\small Continued...}}\\}
+\tablelasttail{}
 \begin{center}
-  \begin{supertabular}{|c|p{0.30in}|p{2.25in}|l|}
-  \hline
+  \begin{supertabular}{|C{0.2in}|R{0.45in}|L{2.25in}|R{0.35in}|}
 ''')
 
   return header
